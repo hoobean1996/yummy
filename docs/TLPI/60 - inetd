@@ -1,0 +1,18 @@
+# Internet Superserver Daemon
+If we look through the contents of `/etc/services`, we see literally hundreds of different services list.
+
+However, most of these servers would usually be doing nothing but waiting for infrequent connection requests or datagrams.
+
+the `inetd` daemon is designed to eliminate the need to run large numbers of infrequently used servers.
+1. a single process - `inetd` monitors a specified set of socket ports and starts other servers as required.
+2. the programming of the servers started by `inetd` is simplified, becaused `inetd` performs serveral of the steps.
+
+
+## design
+`inetd` daemon is normally started during system boot.
+1. For each of the services specified in the `/etc/inetd.conf`, `inetd` creates a socket of the appropriate type and binds it to the specified port.
+2. Using `select` or `epoll` to monitors all of the sockets created in the preceding step.
+3. the `select` call blocks untile either a UDP or TCP comes.
+4. `inetd` calls `fork` to create a new process that then does an `exec` to start the server program. before `exec`:
+   1. close all of the file descriptors inherited from its part, excep the one for the socket on which the UDP datagram is available or the TPC connection has been accepted.
+   2. Use the techniques description to duplicate the socket file descriptor on file descriptor 0, 1, 2 and close the socket file descriptor itself.

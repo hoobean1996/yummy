@@ -3,6 +3,7 @@
 #include "src/cetty/event_loop.h"
 #include "src/cetty/server.h"
 #include "src/core/core.h"
+#include <csignal>
 
 class ServerConnectionCallback : public cetty::IConnectionCallback {
 public:
@@ -24,8 +25,13 @@ public:
   }
 };
 
+void signalHandler(int signum) {
+  LOG(ERROR) << "signalHandler: signal=" << signum;
+}
+
 int main(int argc, char *argv[]) {
   yummy::initYummy(argc, argv);
+  signal(SIGINT, signalHandler);
   cetty::EventLoop loop{};
   cetty::Server server{&loop, new ServerConnectionCallback()};
   server.start(8888);
