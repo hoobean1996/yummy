@@ -1,0 +1,12 @@
+# core
+- CPU Architectures, Resource, Performance
+- Memory Architecture and Performance
+- Threads, Memory and Concurrency
+- Advanced Concurrency
+- Concurrency Performance
+- Data Structure for Concurrency
+- Concurrency in C++
+- High-performance C++
+- Compiler Optimization in C++
+- Undefined Behaviour and Performance
+- Design for Performance

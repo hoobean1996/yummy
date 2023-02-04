@@ -35,3 +35,8 @@ http_archive(
     strip_prefix = "glog-0.6.0",
     urls = ["https://github.com/google/glog/archive/v0.6.0.zip"],
 )
+
+local_repository (
+    name = "com_github_google_benchmark",
+    path = "third-party/benchmark",
+)
