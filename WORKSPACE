@@ -4,6 +4,16 @@ load('@bazel_tools//tools/build_defs/repo:git.bzl', 'git_repository')
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
+rules_python_version = "740825b7f74930c62f44af95c9a4c1bd428d2c53" # Latest @ 2021-06-23
+
+http_archive(
+    name = "rules_python",
+    sha256 = "3474c5815da4cb003ff22811a36a11894927eda1c2e64bf2dac63e914bfdf30f",
+    strip_prefix = "rules_python-{}".format(rules_python_version),
+    url = "https://github.com/bazelbuild/rules_python/archive/{}.zip".format(rules_python_version),
+)
+
+
 # Hedron's Compile Commands Extractor for Bazel
 # https://github.com/hedronvision/bazel-compile-commands-extractor
 http_archive(
@@ -36,7 +46,19 @@ http_archive(
     urls = ["https://github.com/google/glog/archive/v0.6.0.zip"],
 )
 
-local_repository (
-    name = "com_github_google_benchmark",
-    path = "third-party/benchmark",
+
+
+http_archive(
+    name = "io_bazel_rules_go",
+    sha256 = "56d8c5a5c91e1af73eca71a6fab2ced959b67c86d12ba37feedb0a2dfea441a6",
+    urls = [
+        "https://mirror.bazel.build/github.com/bazelbuild/rules_go/releases/download/v0.37.0/rules_go-v0.37.0.zip",
+        "https://github.com/bazelbuild/rules_go/releases/download/v0.37.0/rules_go-v0.37.0.zip",
+    ],
 )
+
+load("@io_bazel_rules_go//go:deps.bzl", "go_register_toolchains", "go_rules_dependencies")
+
+go_rules_dependencies()
+
+go_register_toolchains(version = "1.19.3")
