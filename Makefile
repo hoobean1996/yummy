@@ -4,3 +4,4 @@ refresh:
 query:	
 	bazel query 'kind(".*_library", //...)'
 	bazel query 'kind(".*_binary", //...)'
+	bazel query 'kind(".*_test", //...)'
