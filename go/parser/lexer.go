@@ -32,6 +32,10 @@ func (l *Lexer) NextToken() Token {
 	l.skipWhitespace()
 
 	switch l.ch {
+	case '<':
+		tok = Token{LT, "<"}
+	case '>':
+		tok = Token{GT, ">"}
 	case '[':
 		tok = Token{LBRAKET, "["}
 	case ']':
@@ -43,15 +47,40 @@ func (l *Lexer) NextToken() Token {
 	case ',':
 		tok = Token{COMMA, ","}
 	case ':':
-		tok = Token{COLON, ";"}
+		tok = Token{COLON, ":"}
 	case '"':
 		tok = Token{QUOTE, "\""}
+	case '=':
+		if l.peerChar() == '=' {
+			l.readChar()
+			tok = Token{EQ, "=="}
+		} else {
+			tok = Token{ASSIGN, "="}
+		}
+	case '+':
+		tok = Token{PLUS, "+"}
+	case '-':
+		tok = Token{MINUS, "-"}
+	case '!':
+		if l.peerChar() == '=' {
+			l.readChar()
+			tok = Token{NEQ, "!="}
+		} else {
+			tok = Token{BANG, "!"}
+		}
+	case '*':
+		tok = Token{ASTERISK, "*"}
+	case '/':
+		tok = Token{SLASH, "/"}
+	case ';':
+		tok = Token{SEMICOLON, ";"}
 	case 0:
 		tok.Literal = ""
 		tok.Type = EOF
 	default:
 		if isLetter(l.ch) {
 			tok = Token{ID, l.readIdentifier()}
+			tok.Type = lookupIdent(tok.Literal)
 			return tok
 		} else if isDigit(l.ch) {
 			val, ok := l.readNumber()
@@ -102,5 +131,13 @@ func isDigit(ch byte) bool {
 func (l *Lexer) skipWhitespace() {
 	for l.ch == ' ' || l.ch == '\t' || l.ch == '\n' || l.ch == '\r' {
 		l.readChar()
+	}
+}
+
+func (l *Lexer) peerChar() byte {
+	if l.readPosition >= len(l.input) {
+		return 0
+	} else {
+		return l.input[l.readPosition]
 	}
 }
