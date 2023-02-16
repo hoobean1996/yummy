@@ -10,6 +10,8 @@ const (
 	RBRACE    TokenType = "}"
 	LBRAKET   TokenType = "["
 	RBRAKET   TokenType = "]"
+	LPAREN    TokenType = "("
+	RPAREN    TokenType = ")"
 	COMMA     TokenType = ","
 	COLON     TokenType = ":"
 	QUOTE     TokenType = "\""
