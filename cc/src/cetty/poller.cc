@@ -2,6 +2,7 @@
 #include "channel.h"
 #include "glog/logging.h"
 #include <sys/epoll.h>
+#include <unistd.h>
 
 namespace cetty {
 Poller::Poller() {
@@ -12,7 +13,10 @@ Poller::Poller() {
   LOG(ERROR) << "Construct Poller:" << this;
 }
 
-Poller::~Poller() { LOG(ERROR) << "Desctruct Poller:" << this; }
+Poller::~Poller() {
+  close(epollFd_);
+  LOG(ERROR) << "Desctruct Poller:" << this;
+}
 
 void Poller::poll(std::vector<Channel *> *channels) {
   int fds = ::epoll_wait(epollFd_, events_, kMaxEvents_, -1);

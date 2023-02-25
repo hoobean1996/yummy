@@ -1,5 +1,7 @@
 
 #include "server.h"
+#include "cc/src/cetty/acceptor.h"
+#include "cc/src/cetty/addr.h"
 #include "connection.h"
 #include "glog/logging.h"
 
@@ -11,9 +13,15 @@ Server::Server(EventLoop *loop, IConnectionCallback *callback)
 
 Server::~Server() { LOG(ERROR) << "Destruct Server:" << this; }
 
+void Server::start(std::string ip, int port) {
+  LOG(ERROR) << "Server::start at ip:" << ip << ",port:" << port << std::endl;
+  acceptor_ = new Acceptor(loop_, new Addr(ip, port), this);
+  acceptor_->start();
+}
+
 void Server::start(int port) {
   LOG(ERROR) << "Server::start at port:" << port;
-  acceptor_ = new Acceptor(loop_, port, this);
+  acceptor_ = new Acceptor(loop_, new Addr("127.0.0.1", port), this);
   acceptor_->start();
 }
 

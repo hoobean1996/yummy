@@ -1,5 +1,8 @@
 #include "acceptor.h"
+#include "cc/src/cetty/addr.h"
+#include "cc/src/cetty/channel.h"
 #include "glog/logging.h"
+#include <arpa/inet.h>
 #include <fcntl.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
@@ -7,9 +10,9 @@
 
 namespace cetty {
 
-Acceptor::Acceptor(EventLoop *loop, int port, IAcceptorCallback *callback)
-    : port_(port), listenFd_(-1), serverSockChannel_(nullptr),
-      callback_(callback), loop_(loop) {
+Acceptor::Acceptor(EventLoop *loop, Addr *addr, IAcceptorCallback *callback)
+    : port_(addr->getPort()), listenFd_(-1), addr_(addr),
+      serverSockChannel_(nullptr), callback_(callback), loop_(loop) {
   LOG(ERROR) << "Construct Acceptor:" << this;
 }
 
@@ -42,7 +45,7 @@ int Acceptor::listenOn() {
   fcntl(listenFd_, F_SETFL, O_NONBLOCK);
   setsockopt(listenFd_, SOL_SOCKET, SO_REUSEADDR, &on, sizeof on);
   serverAddr.sin_family = AF_INET;
-  serverAddr.sin_addr.s_addr = htonl(0x7f000001);
+  serverAddr.sin_addr.s_addr = ::inet_addr(addr_->getIP().c_str());
   serverAddr.sin_port = htons(port_);
   if (-1 ==
       bind(listenFd_, (struct sockaddr *)&serverAddr, sizeof serverAddr)) {
@@ -50,7 +53,8 @@ int Acceptor::listenOn() {
   LOG(ERROR) << "Acceptor::listenOn bind successfully";
   if (-1 == listen(listenFd_, 5)) {
   }
-  LOG(ERROR) << "Acceptor::listenOn listen successfully";
+  LOG(ERROR) << "Acceptor::listenOn listen ip:" << addr_->getIP()
+             << ", port:" << addr_->getPort() << " successfully";
   return listenFd_;
 }
 } // namespace cetty
