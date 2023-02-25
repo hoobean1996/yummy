@@ -36,8 +36,10 @@ void Poller::update(Channel *channel) {
   if (flag == kNew) {
     ::epoll_ctl(epollFd_, EPOLL_CTL_ADD, channelFd, &ev);
     channel->setFlag(kAdded);
-  } else {
+  } else if (flag == kAdded) {
     ::epoll_ctl(epollFd_, EPOLL_CTL_MOD, channelFd, &ev);
+  } else if (flag == kDeleted) {
+    ::epoll_ctl(epollFd_, EPOLL_CTL_DEL, channelFd, &ev);
   }
 }
 

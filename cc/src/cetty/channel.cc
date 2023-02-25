@@ -29,6 +29,10 @@ void Channel::enableWriting() {
   interestedEvents_ |= EPOLLOUT;
   update();
 }
+void Channel::enableAll() {
+  interestedEvents_ |= EPOLLIN | EPOLLOUT | EPOLLET;
+  update();
+}
 void Channel::disableWriting() {
   interestedEvents_ &= ~EPOLLOUT;
   update();

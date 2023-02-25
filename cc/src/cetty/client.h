@@ -13,7 +13,7 @@ public:
 
   void connect(std::string ip, int port);
   void connect(int port);
-  void blockingConnect(std::string ip, int port);
+  Connection *blockingConnect(std::string ip, int port);
 
   void handleReadEvent() override;
   void handleWriteEvent() override;

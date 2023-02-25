@@ -1,10 +1,11 @@
 cc_binary(
-    name = "cettry_server",
+    name = "cetty_server",
     srcs = ["cetty_server.cc"],
     copts = [],
     deps = [
         "//cc/src/cetty",
         "//cc/src/core",
+        "@com_github_gflags_gflags//:gflags",
     ],
 )
 

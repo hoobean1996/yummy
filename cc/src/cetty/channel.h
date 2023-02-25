@@ -4,6 +4,7 @@
 
 const int kNew = -1;
 const int kAdded = 1;
+const int kDeleted = 2;
 
 namespace cetty {
 class EventLoop;
@@ -23,6 +24,7 @@ public:
   void handleEvent();
   void enableReading();
   void enableWriting();
+  void enableAll();
   void disableWriting();
   bool isWriting();
   int getEvents();

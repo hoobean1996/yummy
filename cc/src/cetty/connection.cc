@@ -1,3 +1,5 @@
+#include <cerrno>
+#include <cstring>
 #include <glog/logging.h>
 
 #include "buffer.h"
@@ -8,8 +10,7 @@ namespace cetty {
 Connection::Connection(int sockFd, EventLoop *loop,
                        IConnectionCallback *callback)
     : sockFd_(sockFd), loop_(loop), app_(callback),
-      outBuffer_(new common::Buffer()) {
-  LOG(ERROR) << "Construct Connection:" << this << " fd=" << sockFd;
+      outBuffer_(new common::Buffer()), inBuffer_(new common::Buffer()) {
   sockChannel_ = new Channel(loop_, sockFd_, this);
   sockChannel_->enableReading();
   if (callback == nullptr) {
@@ -35,25 +36,27 @@ void Connection::sendInLoop(const std::string &message) {
 void Connection::connectionEstablished() { app_->onConnection(this); }
 
 void Connection::handleReadEvent() {
-  LOG(ERROR) << "Connection:" << this << " Connection::handleRead";
   int sockFd = sockChannel_->getFd();
-  int readLength;
-  char line[1024];
   if (sockFd < 0) {
     return;
   }
+  char line[1024];
   bzero(line, 1024);
-  if ((readLength = read(sockFd, line, 1024)) < 0) {
+  int readLength = read(sockFd, line, 1024);
+  if (readLength < 0) {
     if (errno == ECONNRESET) {
       close(sockFd);
+      LOG(FATAL) << "read failed, errno=" << errno
+                 << ", errmsg=" << strerror(errno);
     }
   } else if (readLength == 0) {
+    LOG(ERROR) << "readLength=0, remote close the connection";
     close(sockFd);
   } else {
+    LOG(ERROR) << "readLength=" << readLength;
     std::string lineStr(line, readLength);
-    common::Buffer *buffer = new common::Buffer();
-    buffer->writeString(lineStr);
-    app_->onMessage(this, buffer);
+    inBuffer_->writeString(lineStr);
+    app_->onMessage(this, inBuffer_);
   }
 }
 

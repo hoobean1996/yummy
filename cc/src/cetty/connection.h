@@ -37,5 +37,6 @@ private:
   EventLoop *loop_;
   IConnectionCallback *app_;
   common::Buffer *outBuffer_;
+  common::Buffer *inBuffer_;
 };
 } // namespace cetty

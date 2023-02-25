@@ -13,6 +13,7 @@ public:
   void onConnection(cetty::Connection *) override {}
   void onMessage(cetty::Connection *conn, common::Buffer *message) override {
     LOG(ERROR) << "message = " << message->readAsString();
+    conn->sendMessage("hello client");
   }
   void onWriteComplete(cetty::Connection *) override {}
 };
