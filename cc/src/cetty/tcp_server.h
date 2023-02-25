@@ -8,22 +8,13 @@ namespace cetty {
 
 class ServerConnectionCallback : public cetty::IConnectionCallback {
 public:
-  ServerConnectionCallback() {
-    LOG(ERROR) << "Construct ServerConnectionCallback:" << this;
-  }
-  ~ServerConnectionCallback() {
-    LOG(ERROR) << "Destruct ServerConnectionCallback:" << this;
-  }
-  void onConnection(cetty::Connection *) override {
-    LOG(ERROR) << "ServerConnectionCallback:" << this << " onConnection";
-  }
+  ServerConnectionCallback() {}
+  ~ServerConnectionCallback() {}
+  void onConnection(cetty::Connection *) override {}
   void onMessage(cetty::Connection *conn, common::Buffer *message) override {
-    LOG(ERROR) << "ServerConnectionCallback:" << this << " onMessage";
     LOG(ERROR) << "message = " << message->readAsString();
   }
-  void onWriteComplete(cetty::Connection *) override {
-    LOG(ERROR) << "ServerConnectionCallback:" << this << " onWriteComplete";
-  }
+  void onWriteComplete(cetty::Connection *) override {}
 };
 
 class TCPServer : public Server {

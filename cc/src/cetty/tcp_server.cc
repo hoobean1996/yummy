@@ -6,11 +6,7 @@
 
 namespace cetty {
 TCPServer::TCPServer(EventLoop *loop)
-    : Server(loop, new ServerConnectionCallback()) {
-  LOG(ERROR) << "Construct TPCServer: " << this << std::endl;
-}
+    : Server(loop, new ServerConnectionCallback()) {}
 
-TCPServer::~TCPServer() {
-  LOG(ERROR) << "Destruct TCPServer: " << this << std::endl;
-}
+TCPServer::~TCPServer() {}
 } // namespace cetty

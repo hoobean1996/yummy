@@ -17,7 +17,7 @@ public:
   virtual void onWriteComplete(Connection *) = 0;
 };
 
-class Connection : public IChannelCallback {
+class Connection : public EventHandler {
 public:
   Connection(int sockFd, EventLoop *loop, IConnectionCallback *callback);
   ~Connection();
@@ -28,8 +28,8 @@ public:
   void sendInLoop(const std::string &message);
   void connectionEstablished();
 
-  virtual void handleRead();
-  virtual void handleWrite();
+  virtual void handleReadEvent();
+  virtual void handleWriteEvent();
 
 private:
   int sockFd_;

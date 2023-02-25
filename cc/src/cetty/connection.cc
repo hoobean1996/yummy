@@ -34,7 +34,7 @@ void Connection::sendInLoop(const std::string &message) {
 
 void Connection::connectionEstablished() { app_->onConnection(this); }
 
-void Connection::handleRead() {
+void Connection::handleReadEvent() {
   LOG(ERROR) << "Connection:" << this << " Connection::handleRead";
   int sockFd = sockChannel_->getFd();
   int readLength;
@@ -57,7 +57,7 @@ void Connection::handleRead() {
   }
 }
 
-void Connection::handleWrite() {
+void Connection::handleWriteEvent() {
   int sockFd = sockChannel_->getFd();
   if (sockChannel_->isWriting()) {
     int n = ::write(sockFd, outBuffer_->peek(), outBuffer_->readableBytes());

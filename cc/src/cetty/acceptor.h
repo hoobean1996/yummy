@@ -8,14 +8,18 @@ public:
   virtual void handleNewConnection(int fd) = 0;
 };
 
-class Acceptor : public IChannelCallback {
+// @ezdoc
+// Acceptor is used to accept new connection.
+// Server will embed the acceptor to listen on given IP:Port, so we provide a
+// callback for Server to manage connections.
+class Acceptor : public EventHandler {
 public:
   Acceptor(EventLoop *loop, Addr *addr, IAcceptorCallback *callback);
   ~Acceptor();
   void start();
 
-  virtual void handleRead();
-  virtual void handleWrite();
+  void handleReadEvent() override;
+  void handleWriteEvent() override;
 
 private:
   int port_;

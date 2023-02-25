@@ -24,6 +24,7 @@ cc_library(
         "tcp_server.h",
         "addr.h",
         "client.h",
+        "event_handler.h",
     ],
     visibility = ["//visibility:public"],
     deps = [

@@ -15,7 +15,7 @@ int main(int argc, char *argv[]) {
   signal(SIGINT, signalHandler);
   cetty::EventLoop loop{};
   cetty::TCPServer server{&loop};
-  server.start(8888);
+  server.start(8000);
   loop.loop();
   return 0;
 }

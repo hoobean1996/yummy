@@ -3,14 +3,11 @@
 
 namespace cetty {
 
-EventLoop::EventLoop() : running_(true), poller_(new Poller()) {
-  LOG(ERROR) << "Construct EventLoop:" << this;
-}
+EventLoop::EventLoop() : running_(true), poller_(new Poller()) {}
 
-EventLoop::~EventLoop() { LOG(ERROR) << "Desctruct EventLoop:" << this; }
+EventLoop::~EventLoop() {}
 
 void EventLoop::loop() {
-  LOG(ERROR) << "EventLoop:" << this << " is polling";
   while (running_) {
     std::vector<Channel *> channels;
     poller_->poll(&channels);

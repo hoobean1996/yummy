@@ -8,17 +8,19 @@ class Channel;
 
 // @ezdoc
 // Poller is used to illustrate epoll, poll and kqueue.
-// ::poll will poll ready events from epoll, and push them to given channels.
+// Currently, we only support epoll.
 class Poller {
 public:
   Poller();
   ~Poller();
+  // poll will extract ready evets from those fd, and store int channels.
   void poll(std::vector<Channel *> *channels);
+  // update will use Channel's information to initialise epoll event.
   void update(Channel *channel);
 
 private:
-  static const int kMaxEvents_ = 1024;
   int epollFd_;
-  struct epoll_event events_[kMaxEvents_];
+  static const int maxEventsNum_ = 1024;
+  struct epoll_event events_[maxEventsNum_];
 };
 } // namespace cetty

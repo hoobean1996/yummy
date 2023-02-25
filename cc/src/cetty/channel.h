@@ -1,23 +1,23 @@
 #pragma once
 
+#include "event_handler.h"
+
 const int kNew = -1;
 const int kAdded = 1;
 
-class IChannelCallback {
-public:
-  virtual void handleRead() = 0;
-  virtual void handleWrite() = 0;
-};
-
 namespace cetty {
 class EventLoop;
+
+// @ezdoc
+// Channel is used to manage a fd and its corresponding event handler.
 class Channel {
 public:
-  Channel();
-  Channel(EventLoop *loop, int fd, IChannelCallback *callback);
+  Channel() = delete;
+  Channel(EventLoop *loop, int fd, EventHandler *handler);
   ~Channel();
 
-  void setRevents(int revents);
+  void setReadyEvents(int revents);
+  // setFlag is used to update the channel's status.
   void setFlag(int flag);
   // handleEvent when anything is aready, will trigger it.
   void handleEvent();
@@ -31,11 +31,13 @@ public:
 
 private:
   int fd_;
-  int events_;
-  int revents_;
+  int interestedEvents_;
+  int readyEvents_;
   int flag_;
-  IChannelCallback *callback_;
+
+  EventHandler *handler_;
   EventLoop *loop_;
+
   void update();
 };
 } // namespace cetty

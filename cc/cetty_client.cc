@@ -29,7 +29,7 @@ int main(int argc, char *argv[]) {
   google::InitGoogleLogging(argv[0]);
   cetty::EventLoop loop;
   cetty::Client client{&loop, new ClientConnectionCallback()};
-  client.connect("127.0.0.1", 8888);
+  client.blockingConnect("127.0.0.1", 8889);
   loop.loop();
   return 0;
 }
