@@ -1,31 +1,35 @@
-#define FUSE_USE_VERSION 26
+#include "fs.h"
+#include <cstring>
+#include <fcntl.h>
+#include <glog/logging.h>
+#include <string.h>
+#include <unistd.h>
 
-#include <fuse.h>
-#include <stdio.h>
-
-static int myfs_getattr(const char *path, struct stat *stbuf) {
-  // Implement the getattr() function to get attributes of a file
-  return 0;
+FileSystem::FileSystem(std::string disk) : disk_(disk) {
+  int diskFd = open(disk.c_str(), O_RDWR, 0666);
+  if (diskFd == -1) {
+    LOG(FATAL) << "open disk failed " << strerror(errno);
+  }
+  char metadata[blockSize];
+  int n = read(diskFd, metadata, blockSize);
+  if (n == 0) {
+    LOG(FATAL) << "metadata block must not be null";
+  }
+  if (metadata[0] != 'v' && metadata[1] != 'f' && metadata[2] != 's') {
+    LOG(ERROR) << "filesystem does not init";
+  }
+  char defaultMetadata[blockSize];
+  memset(defaultMetadata, 0, blockSize);
+  defaultMetadata[0] = 'v';
+  defaultMetadata[1] = 'f';
+  defaultMetadata[2] = 's';
+  n = write(diskFd, defaultMetadata, blockSize);
+  if (n != blockSize) {
+    LOG(FATAL) << "filesystem init failed";
+  }
+  LOG(ERROR) << "filesystem init succeed";
 }
 
-static int myfs_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
-                        off_t offset, struct fuse_file_info *fi) {
-  // Implement the readdir() function to read a directory
-  return 0;
-}
+int32_t FileSystem::createDirectory(std::string dir) { return 0; }
 
-static int myfs_read(const char *path, char *buf, size_t size, off_t offset,
-                     struct fuse_file_info *fi) {
-  // Implement the read() function to read a file
-  return 0;
-}
-
-static struct fuse_operations myfs_operations = {
-    .getattr = myfs_getattr,
-    .readdir = myfs_readdir,
-    .read = myfs_read,
-};
-
-int main(int argc, char *argv[]) {
-  return fuse_main(argc, argv, &myfs_operations, NULL);
-}
+FileSystem::~FileSystem() {}
